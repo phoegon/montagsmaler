@@ -54,6 +54,15 @@ if (Meteor.isClient) {
         return "Code last updated " + new Date();
     };
 
+    Template.hello.events({
+        'click input' : function() {
+            Meteor.call('clearArea',function(err, response) {
+            console.log(err);
+            console.log(response);
+            });
+        }
+    });
+
     Template.drawport.events({
         'mousemove .drawport svg': function (event) {
             if (Session.get("started")) {
@@ -100,6 +109,10 @@ if (Meteor.isClient) {
 
 if (Meteor.isServer) {
     Meteor.startup(function () {
-        // code to run on server at startup
+        Meteor.methods({
+            clearArea : function(){
+                Lines.remove({});
+            }
+        });        
     });
 }
