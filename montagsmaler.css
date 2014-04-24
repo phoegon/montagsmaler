@@ -12,3 +12,7 @@
   font: 10px sans-serif;
   text-anchor: end;
 }
+
+.drawport svg {
+  box-shadow: 0px 0px 15px 5px rgba(150,150,255, 1);
+}
