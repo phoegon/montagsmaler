@@ -88,15 +88,30 @@ if (Meteor.isClient) {
     });
 
     Template.drawport.events({
-        //'touchmove '
+        'touchmove .drawport svg': function (event) {
+            var touchPosition;
+            event.preventDefault();
+            touchPosition = event.originalEvent.changedTouches.item(0);
+            continueSession(coordsRelativeToElement(event.currentTarget, touchPosition));
+        },
         'mousemove .drawport svg': function (event) {
             continueSession(coordsRelativeToElement(event.currentTarget, event));
         },
-        //'touchstart
+        'touchstart .drawport svg': function (event) {
+            var touchPosition;
+            event.preventDefault();
+            touchPosition = event.originalEvent.changedTouches.item(0);
+            startSession(coordsRelativeToElement(event.currentTarget, touchPosition));
+        },
         'mousedown .drawport svg': function (event) {
             startSession(coordsRelativeToElement(event.currentTarget, event));
         },
-        //'touchend '
+        'touchend .drawport svg': function (event) {
+            var touchPosition;
+            event.preventDefault();
+            touchPosition = event.originalEvent.changedTouches.item(0);
+            endSession(coordsRelativeToElement(event.currentTarget, touchPosition));
+        },
         'mouseup .drawport svg': function (event) {
             endSession(coordsRelativeToElement(event.currentTarget, event));
         }
