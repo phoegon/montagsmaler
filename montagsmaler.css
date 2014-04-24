@@ -1,1 +1,14 @@
 /* CSS declarations go here */
+.drawport rect {
+  fill: steelblue;
+}
+
+.drawport line {
+    stroke: rgb(0,0,0);
+}
+
+.drawport text {
+  fill: white;
+  font: 10px sans-serif;
+  text-anchor: end;
+}
