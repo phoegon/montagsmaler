@@ -20,22 +20,17 @@ if (Meteor.isClient) {
 
     Deps.autorun(function () {
         "use strict";
-        var data, width, height, x, chart, bar;
+        var chart, line;
 
-        data = [4, 8, 15, 16, 23, 42];
-        width = 420;
-        height = 420;
+        chart = d3.select(".drawport svg");
 
-        chart = d3.select(".drawport svg")
-            .attr("width", width)
-            .attr("height", height);
+        line = chart.selectAll("line")
+            .data(Lines.find().fetch());
+            
+        line.exit().remove();
+        line.enter().append("line");
 
-        bar = chart.selectAll("g")
-            .data(Lines.find().fetch())
-            .enter().append("g");
-
-        bar.append("line")
-            .attr("x1", function (d) {
+        line.attr("x1", function (d) {
                 return d.beginX;
             })
             .attr("y1", function (d) {
@@ -56,10 +51,7 @@ if (Meteor.isClient) {
 
     Template.hello.events({
         'click input' : function() {
-            Meteor.call('clearArea',function(err, response) {
-            console.log(err);
-            console.log(response);
-            });
+            Meteor.call('clearArea',function(err, response) {});
         }
     });
 
@@ -103,8 +95,17 @@ if (Meteor.isClient) {
                 Session.set("started", false);
             }
         }
-
     });
+    Template.drawport.rendered = function() {
+        var width, height, chart;
+
+        width = 420;
+        height = 420;
+
+        chart = d3.select(".drawport svg")
+            .attr("width", width)
+            .attr("height", height);
+    }
 }
 
 if (Meteor.isServer) {
