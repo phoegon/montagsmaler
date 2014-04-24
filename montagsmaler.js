@@ -49,30 +49,52 @@ if (Meteor.isClient) {
             });
 
     });
+
     Template.hello.greeting = function () {
         return "Code last updated " + new Date();
     };
 
     Template.drawport.events({
-        'mousemove .drawport': function (event) {
-            // template data, if any, is available in 'this'
-            var coords, oldCoords;
-            oldCoords = Session.get("coords");
+        'mousemove .drawport svg': function (event) {
+            if (Session.get("started")) {
+                var coords, oldCoords;
+                oldCoords = Session.get("coords");
 
-            coords = coordsRelativeToElement(event.currentTarget, event);
+                coords = coordsRelativeToElement(event.currentTarget, event);
 
-            if (oldCoords) {
                 Lines.insert({
                     beginX: oldCoords.x,
                     beginY: oldCoords.y,
                     endX: coords.x,
                     endY: coords.y,
                 });
+
+                Session.set("coords", coords);
             }
-            Session.set("coords", coords);
+        },
+        'mousedown .drawport svg': function (event) {
+            Session.set("coords", coordsRelativeToElement(event.currentTarget, event));
+            Session.set("started", true);
+        },
+        'mouseup .drawport svg': function (event) {
+            if (Session.get("started")) {
+                var coords, oldCoords;
+                oldCoords = Session.get("coords");
 
+                coords = coordsRelativeToElement(event.currentTarget, event);
 
+                Lines.insert({
+                    beginX: oldCoords.x,
+                    beginY: oldCoords.y,
+                    endX: coords.x,
+                    endY: coords.y,
+                });
+
+                Session.set("coords", null);
+                Session.set("started", false);
+            }
         }
+
     });
 }
 
