@@ -18,32 +18,34 @@ if (Meteor.isClient) {
 
     Meteor.subscribe("lines");
 
-    Deps.autorun(function () {
-        "use strict";
-        var chart, line;
+    var redraw = function () {
+            "use strict";
+            var chart, line;
+    
+            chart = d3.select(".drawport svg");
+    
+            line = chart.selectAll("line")
+                .data(Lines.find().fetch());
+                
+            line.exit().remove();
+            line.enter().append("line");
+    
+            line.attr("x1", function (d) {
+                    return d.beginX;
+                })
+                .attr("y1", function (d) {
+                    return d.beginY;
+                })
+                .attr("x2", function (d) {
+                    return d.endX;
+                })
+                .attr("y2", function (d) {
+                    return d.endY;
+                });
+    
+        };
 
-        chart = d3.select(".drawport svg");
-
-        line = chart.selectAll("line")
-            .data(Lines.find().fetch());
-            
-        line.exit().remove();
-        line.enter().append("line");
-
-        line.attr("x1", function (d) {
-                return d.beginX;
-            })
-            .attr("y1", function (d) {
-                return d.beginY;
-            })
-            .attr("x2", function (d) {
-                return d.endX;
-            })
-            .attr("y2", function (d) {
-                return d.endY;
-            });
-
-    });
+    Deps.autorun(redraw);
 
     Template.hello.greeting = function () {
         return "Code last updated " + new Date();
@@ -105,6 +107,8 @@ if (Meteor.isClient) {
         chart = d3.select(".drawport svg")
             .attr("width", width)
             .attr("height", height);
+        
+        redraw();
     }
 }
 
